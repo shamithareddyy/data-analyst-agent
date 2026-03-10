@@ -66,11 +66,78 @@ class DatasetOverview(BaseModel):
     sample_rows: list[dict[str, Any]]
 
 
+# ── Dataset Intelligence (Overview Tab) ──────────────────────────
+
+class DatasetClassification(BaseModel):
+    dataset_type: str
+    confidence: int  # 0-100
+    matched_keywords: list[str]
+
+
+class DatasetProfile(BaseModel):
+    total_rows: int
+    total_columns: int
+    numeric_count: int
+    categorical_count: int
+    text_count: int
+    date_count: int
+    boolean_count: int
+
+
+class ColumnMissing(BaseModel):
+    column: str
+    missing_pct: float
+
+
+class DataHealth(BaseModel):
+    overall_missing_pct: float
+    column_missing: list[ColumnMissing]
+    duplicate_rows: int
+    duplicate_pct: float
+    format_issues: list[str]
+    feature_diversity: float  # 0-1 average unique ratio
+
+
+class ColumnIntelligence(BaseModel):
+    name: str
+    dtype: str
+    unique_count: int
+    duplicate_count: int
+    missing_pct: float
+    distribution_insight: str
+    suggested_role: str  # identifier, categorical_feature, numeric_metric, date_dimension, text_field, flag
+
+
+class KeySignals(BaseModel):
+    strengths: list[str]
+    risks: list[str]
+    observations: list[str]
+
+
+class MLReadiness(BaseModel):
+    score: int  # 0-100
+    reasoning: list[str]
+
+
+class DatasetIntelligence(BaseModel):
+    classification: DatasetClassification
+    profile: DatasetProfile
+    health: DataHealth
+    executive_summary: list[str]
+    column_intelligence: list[ColumnIntelligence]
+    key_signals: KeySignals
+    ml_readiness: MLReadiness
+    suggested_analyses: list[str]
+
+
+# ── Top-level response ───────────────────────────────────────────
+
 class AnalysisResponse(BaseModel):
     dataset_overview: DatasetOverview
     profiling: ProfilingOutput
     insights: GeminiInsights
     visualizations: list[ChartData]
+    dataset_intelligence: DatasetIntelligence
 
 
 class ErrorResponse(BaseModel):

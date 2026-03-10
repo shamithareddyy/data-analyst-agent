@@ -5,7 +5,9 @@ from app.models.schemas import (
     ProfilingOutput,
     GeminiInsights,
     ChartData,
+    DatasetIntelligence,
 )
+from app.services.dataset_intelligence import generate_full_overview
 
 
 def aggregate_response(
@@ -28,9 +30,16 @@ def aggregate_response(
         sample_rows=sample_rows,
     )
 
+    # Build column category lookup from existing profiling
+    column_categories = {ct.name: ct.category for ct in profiling.column_types}
+
+    # Generate the full dataset intelligence report
+    intelligence = generate_full_overview(df, filename, column_categories)
+
     return AnalysisResponse(
         dataset_overview=overview,
         profiling=profiling,
         insights=insights,
         visualizations=visualizations,
+        dataset_intelligence=intelligence,
     )
