@@ -80,7 +80,8 @@ def generate_visualizations(df: pd.DataFrame, profiling: ProfilingOutput) -> lis
                 showscale=True,
             )
         )
-        fig.update_layout(**_base_layout("Correlation Matrix"), height=500)
+        fig.update_layout(**_base_layout("Correlation Matrix"))
+        fig.update_layout(height=500)
         charts.append(_fig_to_chart(fig, "heatmap", "Correlation Matrix", None))
 
     # --- Scatter plot for strongest correlation ---
